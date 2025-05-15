@@ -1,11 +1,11 @@
 # Use the official Bun image as the base image
-FROM oven/bun:1.0.0
+FROM oven/bun:latest
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and bun.lock to the container
-COPY package.json bun.lock ./
+# Copy package.json to the container
+COPY package.json ./
 
 # Install dependencies using bun
 RUN bun install
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the application using bun
-CMD ["bun", "index.ts"]
+CMD ["bun", "run", "index.ts"]
