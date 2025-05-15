@@ -1,14 +1,14 @@
 # Use Node.js LTS as the base image
-FROM node:22
+FROM node:18
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the container
-COPY package.json ./
+COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN bun install
+# Install dependencies using npm
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
