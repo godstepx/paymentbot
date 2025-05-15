@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "3000:3000"
     volumes:
-      - .:/app # Mount the current directory to the container
-      - /app/node_modules # Exclude node_modules from being overwritten
+      - .:/app
+      - /app/node_modules
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
@@ -23,7 +23,6 @@ services:
     image: nouchka/sqlite3
     volumes:
       - sqlite-data:/data
-    command: ["sqlite3", "/data/roleData.db", ".databases"] # Correct SQLite initialization
     restart: always
 
 volumes:

@@ -1,14 +1,14 @@
-# Use Node.js LTS as the base image
-FROM node:18
+# Use the official Bun image as the base image
+FROM oven/bun:1.0.0
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json to the container
-COPY package.json ./
+# Copy package.json and bun.lock to the container
+COPY package.json bun.lock ./
 
-# Install dependencies using npm
-RUN npm install
+# Install dependencies using bun
+RUN bun install
 
 # Copy the rest of the application code
 COPY . .
@@ -16,5 +16,5 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["bun", "run", "index.ts"]
+# Start the application using bun
+CMD ["bun", "index.ts"]
