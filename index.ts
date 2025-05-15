@@ -78,7 +78,7 @@ app.post('/shoppy-webhook', async (req, res) => {
     console.log('Received webhook payload:', req.body);
 
     const productId = req.body?.data?.product?.id;
-    const discordId = req.body?.customer?.discord_id || req.body?.discord_id;
+    let discordId = req.body?.customer?.discord_id || req.body?.discord_id;
 
     if (!productId) {
       console.error('Missing product ID in payload:', req.body);
