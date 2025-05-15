@@ -4,12 +4,13 @@ WORKDIR /app
 # Development dependencies installation stage
 FROM base AS install
 RUN mkdir -p /app/dev
-COPY package.json bun.lock /app/dev/
+COPY package.json /app/dev/
 RUN cd /app/dev && bun install
 
 # Production dependencies installation stage
+FROM base AS prod-deps
 RUN mkdir -p /app/prod
-COPY package.json bun.lock /app/prod/
+COPY package.json /app/prod/
 RUN cd /app/prod && bun install --production
 
 # Build stage
@@ -19,7 +20,7 @@ COPY . .
 
 # Release stage
 FROM base AS release
-COPY --from=install /app/prod/node_modules node_modules
+COPY --from=prod-deps /app/prod/node_modules node_modules
 COPY --from=prerelease /app/index.ts ./
 COPY --from=prerelease /app/productConfig.json ./
 COPY --from=prerelease /app/package.json ./
