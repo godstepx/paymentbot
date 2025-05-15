@@ -5,12 +5,12 @@ WORKDIR /app
 FROM base AS install
 RUN mkdir -p /app/dev
 COPY package.json bun.lock /app/dev/
-RUN cd /app/dev && bun install --frozen-lockfile
+RUN cd /app/dev && bun install
 
 # Production dependencies installation stage
 RUN mkdir -p /app/prod
 COPY package.json bun.lock /app/prod/
-RUN cd /app/prod && bun install --frozen-lockfile --production
+RUN cd /app/prod && bun install --production
 
 # Build stage
 FROM base AS prerelease
