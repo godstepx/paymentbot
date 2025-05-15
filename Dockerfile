@@ -1,20 +1,34 @@
-# Use the official Bun image as the base image
-FROM oven/bun:latest
-
-# Set the working directory inside the container
+FROM oven/bun:1 AS base
 WORKDIR /app
 
-# Copy package.json to the container
-COPY package.json ./
+# Development dependencies installation stage
+FROM base AS install
+RUN mkdir -p /dev
+COPY package.json bun.lock /dev/
+RUN cd /dev && bun install --frozen-lockfile
 
-# Install dependencies using bun
-RUN bun install
+# Production dependencies installation stage
+RUN mkdir -p /prod
+COPY package.json bun.lock /prod/
+RUN cd /prod && bun install --frozen-lockfile --production
 
-# Copy the rest of the application code
+# Build stage
+FROM base AS prerelease
+COPY --from=install /dev/node_modules node_modules
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 5000
+# Release stage
+FROM base AS release
+COPY --from=install /prod/node_modules node_modules
+COPY --from=prerelease /app/index.ts ./
+COPY --from=prerelease /app/productConfig.json ./
+COPY --from=prerelease /app/package.json ./
 
-# Start the application using bun
-CMD ["bun", "run", "index.ts"]
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'mkdir -p /app/database' >> /app/start.sh && \
+    echo 'bun run index.ts' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
+EXPOSE ${PORT}
+
+ENTRYPOINT ["/app/start.sh"]

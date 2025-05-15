@@ -1,22 +1,24 @@
 version: '3.8'
 
 services:
-  app:
+  bot:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: payment-bot
+    restart: always
     ports:
-      - "5000:5000"
+      - "${PORT}:${PORT}"
     volumes:
       - .:/app
       - /app/node_modules
-      - sqlite-data:/app/data
-    environment:
-      - DISCORD_TOKEN=${DISCORD_TOKEN}
-      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
-      - DISCORD_ROLE_ID=${DISCORD_ROLE_ID}
-      - PORT=${PORT}
-      - TEST_DISCORD_ID=${TEST_DISCORD_ID}
+      - ./database:/app/database
+    env_file:
+      - .env
+    command: >
+      sh -c "bun install &&
+             mkdir -p /app/database &&
+             bun run index.ts"
 
 volumes:
-  sqlite-data:
+  database:
