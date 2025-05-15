@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
+      - DISCORD_ROLE_ID=${DISCORD_ROLE_ID}
+      - PORT=${PORT}
+      - TEST_DISCORD_ID=${TEST_DISCORD_ID}
+    depends_on:
+      - db
+
+  db:
+    image: nouchka/sqlite3
+    volumes:
+      - sqlite-data:/data
+    command: ["sqlite3", "/data/roleData.db"]
+    restart: always
+
+volumes:
+  sqlite-data:
