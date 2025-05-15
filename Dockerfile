@@ -25,12 +25,8 @@ COPY --from=prerelease /app/index.ts ./
 COPY --from=prerelease /app/productConfig.json ./
 COPY --from=prerelease /app/package.json ./
 
-# Create directories and startup script
-RUN mkdir -p /app/database && \
-    echo '#!/bin/sh' > /app/start.sh && \
-    echo 'bun run index.ts' >> /app/start.sh && \
-    chmod +x /app/start.sh
-
+# No need to create a separate script
+# Just run index.ts directly
 EXPOSE 5000
 
-ENTRYPOINT ["/app/start.sh"]
+CMD ["bun", "index.ts"]
