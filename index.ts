@@ -21,7 +21,7 @@ const app = express();
 app.use(express.json());
 
 const dbPromise = open({
-  filename: './roleData.db',
+  filename: path.join(__dirname, 'roleData.db'), // Ensure the path is correct
   driver: sqlite3.Database,
 });
 
